@@ -1,0 +1,195 @@
+================================================================================
+                    EMSI - 5IIR DDSIO (2026/2027)
+         MODULE : DEVELOPPEMENT MULTI-PLATEFORME FLUTTER
+       TP2 : MISE EN PAGE ET ECRAN PROFIL - QUESTIONS & REPONSES
+================================================================================
+
+--------------------------------------------------------------------------------
+PARTIE 2 — COMPARER EXPANDED ET FLEXIBLE
+--------------------------------------------------------------------------------
+
+Question 4 : Quel est le role de Expanded dans une Row ?
+--------------------------------------------------------
+Reponse :
+Dans une Row, le widget Expanded force son widget enfant a s'etendre le long de 
+l'axe horizontal principal (main axis) afin d'occuper la totalite de l'espace 
+restant disponible.
+Lorsque plusieurs widgets Expanded sont places dans la meme Row, ils se partagent 
+equitablement cet espace disponible selon leur facteur de proportion "flex" 
+(par defaut flex: 1). Cela garantit des largeurs identiques et une parfaite 
+symetrie, quel que soit le format de l'ecran.
+
+
+Question 5 : Quelle difference existe-t-il entre Expanded et Flexible (fit: FlexFit.loose) ?
+--------------------------------------------------------------------------------------------
+Reponse :
+- Expanded impose un comportement strict (equivalent a Flexible avec FlexFit.tight) : 
+  il oblige impérativement son enfant a occuper exactement tout l'espace qui lui 
+  est alloue le long de l'axe, meme si son contenu reel est plus petit.
+- Flexible(fit: FlexFit.loose) offre un comportement adaptatif : il permet a l'enfant 
+  d'occuper au maximum l'espace disponible, mais l'autorise a retrecir pour ne 
+  mesurer que la taille minimale necessaire a son contenu.
+
+
+--------------------------------------------------------------------------------
+PARTIE 4 — VERIFICATION ET BILAN
+--------------------------------------------------------------------------------
+
+Question 5 : Pourquoi placer Stack dans un SizedBox de hauteur definie ?
+------------------------------------------------------------------------
+Reponse :
+Par defaut, un widget Stack adapte ses dimensions a celles de ses enfants non 
+positionnes. Dans notre mise en page, le Container d'arriere-plan a une hauteur 
+de 110 px et le CircleAvatar depasse vers le bas pour creer un effet de 
+chevauchement.
+Sans un SizedBox(height: 150) encadrant le Stack, la Column parente ne peut pas 
+determiner l'encombrement reel necessaire, ce qui entrainerait un rognage de 
+l'avatar ou une collision visuelle avec les elements places juste en dessous.
+
+
+Question 6 : Quelle difference existe-t-il entre Padding et Container ?
+-----------------------------------------------------------------------
+Reponse :
+- Padding est un widget specialise et tres leger dont l'unique responsabilite 
+  est d'ajouter des marges interieures autour de son enfant.
+- Container est un widget composite et polyvalent qui rassemble plusieurs 
+  proprietes : marges interieures (padding), marges exterieures (margin), 
+  dimensions fixes (width, height), transformations geometriques, et decoration 
+  visuelle complete grace a BoxDecoration (couleurs de fond, degrades, bordures, 
+  arrondis de coins, ombres portees).
+
+
+Question 7 : Pourquoi conserve-t-on SingleChildScrollView sur la page Profil ?
+------------------------------------------------------------------------------
+Reponse :
+SingleChildScrollView permet de rendre le contenu verticalement defilable pour 
+eviter les erreurs d'overflow ("RenderFlex overflowed by X pixels", visualisees 
+par des bandes hachurees jaunes et noires). Ces erreurs surviennent des que la 
+hauteur de l'ecran devient insuffisante, par exemple sur les petits smartphones, 
+lors du passage de l'appareil en mode paysage (landscape), ou lorsque la taille 
+des polices d'accessibilite du systeme est augmentee.
+
+
+Question 8 : Pourquoi ne peut-on pas encore ouvrir le profil en cliquant sur "Mon profil" ?
+------------------------------------------------------------------------------------------
+Reponse :
+Parce que le mecanisme de routage et de navigation entre ecrans n'a pas encore ete 
+implemente a ce stade du TP (il est prevu pour le TP suivant). Pour l'instant, le 
+bloc "Mon profil" de la page d'accueil n'est pas encore encapsule dans un widget 
+interactif au toucher (comme InkWell ou GestureDetector) declenchant Navigator.push().
+
+
+--------------------------------------------------------------------------------
+PARTIE 5 — ADAPTATION AUX PETITS ECRANS
+--------------------------------------------------------------------------------
+
+Difference entre MainAxisAlignment.spaceBetween, spaceAround et spaceEvenly :
+-----------------------------------------------------------------------------
+Sur l'axe principal horizontal d'une Row :
+1. MainAxisAlignment.spaceBetween :
+   Le premier element est colle a l'extremite gauche, le dernier a l'extremite droite, 
+   et tout l'espace libre restant est reparti uniformement entre les elements.
+2. MainAxisAlignment.spaceAround :
+   L'espace disponible est reparti equitablement autour de chaque element. 
+   Par consequent, l'espace entre deux elements adjacents est exactement le double 
+   de l'espace laisse aux deux extremites exterieures.
+3. MainAxisAlignment.spaceEvenly :
+   Tous les espacements sont rigoureusement identiques, aussi bien entre chaque element 
+   qu'aux deux bords exterieurs gauche et droit.
+
+
+--------------------------------------------------------------------------------
+PARTIE 5 — ANALYSE DE CODE
+--------------------------------------------------------------------------------
+
+Code donne :
+Row(
+  children: [
+    Container(
+      width: 200,
+      height: 80,
+      color: Colors.blue,
+    ),
+    Container(
+      width: 200,
+      height: 80,
+      color: Colors.orange,
+    ),
+  ],
+)
+
+1. Quel probleme peut apparaitre si ce code est execute sur un ecran etroit ?
+----------------------------------------------------------------------------
+Reponse :
+Les deux conteneurs imposent une largeur statique totale de 200 + 200 = 400 pixels 
+logiques. Sur n'importe quel ecran ou fenetre d'une largeur inferieure a 400 px 
+(ex: ecran de 320 px ou 360 px), les widgets debordent de la zone disponible, 
+declenchant une erreur Flutter : "A RenderFlex overflowed by X pixels on the right".
+
+
+2. Modifier le code en utilisant Expanded pour eviter que les deux blocs depassent :
+-----------------------------------------------------------------------------------
+Reponse (Code) :
+Row(
+  children: [
+    Expanded(
+      child: Container(
+        height: 80,
+        color: Colors.blue,
+      ),
+    ),
+    Expanded(
+      child: Container(
+        height: 80,
+        color: Colors.orange,
+      ),
+    ),
+  ],
+)
+
+
+3. Ajouter un espace horizontal de 10 pixels entre les deux blocs sans modifier leur hauteur :
+----------------------------------------------------------------------------------------------
+Reponse (Code) :
+Row(
+  children: [
+    Expanded(
+      child: Container(
+        height: 80,
+        color: Colors.blue,
+      ),
+    ),
+    const SizedBox(width: 10),
+    Expanded(
+      child: Container(
+        height: 80,
+        color: Colors.orange,
+      ),
+    ),
+  ],
+)
+
+
+4. Modifier le code pour que le premier bloc occupe deux fois plus d'espace que le second :
+-------------------------------------------------------------------------------------------
+Reponse (Code) :
+Row(
+  children: [
+    Expanded(
+      flex: 2, // 2 parts de l'espace disponible (2/3)
+      child: Container(
+        height: 80,
+        color: Colors.blue,
+      ),
+    ),
+    const SizedBox(width: 10),
+    Expanded(
+      flex: 1, // 1 part de l'espace disponible (1/3)
+      child: Container(
+        height: 80,
+        color: Colors.orange,
+      ),
+    ),
+  ],
+)
+================================================================================

@@ -1,3 +1,4 @@
+import 'package:emsi_connect/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'screens/home_page.dart';
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const ProfilePage(),
     );
   }
 }

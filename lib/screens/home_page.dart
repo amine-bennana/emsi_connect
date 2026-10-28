@@ -104,22 +104,23 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  // ── Helper : bloc de rubrique ─────────────────────────────────────────
+  // ── Helper : bloc de rubrique (Partie 1 du TP2) ─────────────────────
   Widget _buildRubrique(IconData icon, String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.green.shade50,
+        color: Colors.blue.shade50,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.green.shade200),
+        border: Border.all(color: Colors.blue.shade100),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 40, color: Colors.green),
+          Icon(icon, size: 40, color: Colors.blue.shade700),
           const SizedBox(height: 8),
           Text(
             label,
+            textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,
