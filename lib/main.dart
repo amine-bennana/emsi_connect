@@ -1,6 +1,8 @@
-import 'package:emsi_connect/screens/profile_page.dart';
 import 'package:flutter/material.dart';
-import 'screens/home_page.dart';
+import 'screens/courses_page.dart';
+// Note : HomePage et ProfilePage restent disponibles pour la suite du projet
+// import 'screens/home_page.dart';
+// import 'screens/profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +20,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const ProfilePage(),
+      // Affichage provisoire de CoursesPage pour le TP3
+      home: const CoursesPage(),
     );
   }
 }
