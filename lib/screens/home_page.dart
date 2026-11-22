@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import '../main.dart';
+import 'about_page.dart';
 import 'courses_page.dart';
 import 'login_page.dart';
+import 'multimedia_page.dart';
 import 'profile_page.dart';
+import 'settings_page.dart';
 
 // ── Partie 7 du TP4 : GridView adaptatif sur HomePage ─────────────────────────
 // - Remplacement des Row par GridView.count
@@ -17,6 +20,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return Scaffold(
       // ── AppBar ──────────────────────────────────────────────────────────
       appBar: AppBar(
@@ -59,6 +64,111 @@ class HomePage extends StatelessWidget {
             },
           ),
         ],
+      ),
+
+      // ── Drawer latéral (Partie II du TP5) ───────────────────────────────
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: colors.primary),
+              accountName: const Text('Étudiant EMSI'),
+              accountEmail: const Text('etudiant@emsi.ma'),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: colors.onPrimary,
+                child: Icon(Icons.person, color: colors.primary),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.home_outlined),
+              title: const Text('Accueil'),
+              selected: true,
+              onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              leading: const Icon(Icons.menu_book_outlined),
+              title: const Text('Mes cours'),
+              onTap: () {
+                Navigator.pop(context); // ferme le Drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CoursesPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.person_outline),
+              title: const Text('Mon profil'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfilePage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.perm_media),
+              title: const Text('Espace multimédia'),
+              onTap: () {
+                Navigator.pop(context); // Ferme le Drawer
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MultimediaPage(),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings_outlined),
+              title: const Text('Paramètres'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsPage(),
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.info_outline),
+              title: const Text('À propos'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AboutPage(),
+                  ),
+                );
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Déconnexion'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                  (route) => false,
+                );
+              },
+            ),
+          ],
+        ),
       ),
 
       // ── Body défilable ──────────────────────────────────────────────────
@@ -121,7 +231,7 @@ class HomePage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const CoursesPage(),
+                              builder: (context) => const CoursesPage(),
                             ),
                           );
                         },
@@ -146,7 +256,7 @@ class HomePage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const ProfilePage(),
+                              builder: (context) => const ProfilePage(),
                             ),
                           );
                         },

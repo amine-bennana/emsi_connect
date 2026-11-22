@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../main.dart';
 import '../utils/validators.dart';
+import 'home_page.dart';
 import 'register_page.dart';
 
 // ── TP4 : Formulaires, validation, Material 3 et interfaces adaptatives ────────
@@ -25,35 +26,6 @@ class _LoginPageState extends State<LoginPage> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  void _submit() {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
-    final email = _emailController.text.trim();
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.check_circle_outline, color: Colors.white),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text('Saisie valide pour $email (test local)'),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.green.shade700,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        duration: const Duration(seconds: 3),
-      ),
-    );
   }
 
   @override
@@ -153,9 +125,18 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    // ── Bouton de validation ────────────────────────────────
+                    // ── Bouton de validation (Partie V du TP5) ─────────────
                     ElevatedButton(
-                      onPressed: _submit,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            ),
+                          );
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(

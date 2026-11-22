@@ -1,7 +1,92 @@
 import 'package:flutter/material.dart';
+import 'student_details_page.dart';
 
-class ProfilePage extends StatelessWidget {
+// ── TP5 Bonus B : ProfilePage converti en StatefulWidget ──────────────────────
+// Permet la mise à jour réactive du nom de l'étudiant via un AlertDialog
+// et la propagation immédiate de la nouvelle valeur à StudentDetailsPage.
+
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  // Variables d'état modifiables
+  String _studentName = 'Amine BENNANA';
+  final String _program = 'Ingénierie informatique & réseaux';
+
+  // ── Dialogue interactif de modification du nom (Bonus B) ───────────────────
+  void _showEditNameDialog() {
+    final textController = TextEditingController(text: _studentName);
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.edit, color: Colors.green),
+              SizedBox(width: 8),
+              Text('Modifier le nom'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Entrez le nouveau nom d\'étudiant à afficher sur le profil et la fiche détails :',
+                style: TextStyle(fontSize: 13, color: Colors.black54),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: textController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'Nom et prénom',
+                  hintText: 'Ex: Amine BENNANA',
+                  prefixIcon: Icon(Icons.person_outline),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Annuler'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                final newName = textController.text.trim();
+                if (newName.isNotEmpty) {
+                  setState(() {
+                    _studentName = newName;
+                  });
+                  Navigator.pop(dialogContext);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Nom mis à jour : $newName'),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: Colors.green.shade700,
+                    ),
+                  );
+                }
+              },
+              child: const Text('Enregistrer'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +163,9 @@ class ProfilePage extends StatelessWidget {
               const SizedBox(height: 16),
 
               // ── 3. Informations avec icônes en Row (Partie 5.3 & 5.4) ─
-              _buildInfoRow(Icons.person, 'Nom', 'Amine BENNANA'),
+              _buildInfoRow(Icons.person, 'Nom', _studentName),
               const SizedBox(height: 10),
-              _buildInfoRow(Icons.school, 'Filière', 'Ingénierie informatique & réseaux'),
+              _buildInfoRow(Icons.school, 'Filière', _program),
               const SizedBox(height: 10),
               _buildInfoRow(Icons.layers, 'Niveau', 'S5'),
               const SizedBox(height: 10),
@@ -91,16 +176,14 @@ class ProfilePage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // ── 4. Deux boutons d'action avec Row et Expanded (Partie 5.6) ──
+              // ── 4. Deux boutons d'action avec Row et Expanded (Partie 5.6 + Bonus B) ──
               Row(
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        debugPrint('Modifier le profil cliqué');
-                      },
+                      onPressed: _showEditNameDialog,
                       icon: const Icon(Icons.edit, size: 18),
-                      label: const Text('Modifier le profil'),
+                      label: const Text('Modifier le nom'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.white,
@@ -130,6 +213,35 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+
+              // ── Bouton « Voir les détails » avec transmission de données (Partie IV du TP5) ──
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StudentDetailsPage(
+                          studentName: _studentName,
+                          program: _program,
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.badge_outlined),
+                  label: const Text('Voir les détails'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal.shade700,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
               ),
 
               const SizedBox(height: 28),
@@ -264,7 +376,7 @@ class ProfilePage extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                // Corps de la carte : Photo + Détails
+                // Corps de la carte : Photo + Détails dynamiques
                 Row(
                   children: [
                     const CircleAvatar(
@@ -276,28 +388,28 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 14),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Amine BENNANA',
-                            style: TextStyle(
+                            _studentName,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
-                            'Filière : 5IIR - Informatique',
-                            style: TextStyle(
+                            'Filière : $_program',
+                            style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 13,
                             ),
                           ),
-                          SizedBox(height: 2),
-                          Text(
+                          const SizedBox(height: 2),
+                          const Text(
                             'N° Étudiant : EMSI-2026-9482',
                             style: TextStyle(
                               color: Colors.white70,
